@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.239.130:3306/blog_db
+    username: blog_db
+    password: cWxWSJrm4dhMJseC
+  redis:
+    host: 192.168.239.130
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+    timeout: 5000
+    password: root123
+    database: 0
+  devtools:
+    restart:
+      additional-paths: src/main
+  jackson:
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+      table-prefix: tr_
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
