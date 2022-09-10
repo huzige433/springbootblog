@@ -1,6 +1,7 @@
 package com.blog.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blog.Domain.Blog;
 import com.blog.dao.BlogDao;
@@ -15,10 +16,16 @@ import java.util.List;
 public class BlogServicesLmpl extends ServiceImpl<BlogDao,Blog> implements IBlogService {
 
     //sql数据缓存到redis
-    @Cacheable(cacheNames = "redisTemplate", key = "#userid")
+    @Cacheable(cacheNames = "Userredis", key = "#userid")
     public List<Blog> list(Integer userid) {
         LambdaQueryWrapper<Blog> lqw=new LambdaQueryWrapper<>();
         lqw.eq(Blog::getUserid,userid);
         return super.list(lqw);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "pageredis", key = "#page.current")
+    public <E extends IPage<Blog>> E page(E page) {
+        return super.page(page);
     }
 }

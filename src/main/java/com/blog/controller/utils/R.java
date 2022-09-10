@@ -2,6 +2,8 @@ package com.blog.controller.utils;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 //统一表现层返回数据格式
 @Data
 public class R {

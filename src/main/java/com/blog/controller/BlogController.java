@@ -7,11 +7,13 @@ import com.blog.Domain.User;
 import com.blog.controller.utils.R;
 import com.blog.services.impl.BlogServicesLmpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://127.0.0.1:8081")
 @RequestMapping("/blog")
 public class BlogController {
     @Autowired
@@ -38,6 +40,7 @@ public class BlogController {
     }
 
     @GetMapping("/article")
+    @Cacheable(value = "Blog", key = "#articleid")
     public  R article(@RequestParam String articleid){
         Blog blog=blogServicesLmpl.getById(articleid);
         return new R(blog);
@@ -45,7 +48,7 @@ public class BlogController {
 
     @GetMapping("/page")
     public R page(@RequestParam int pagecount,@RequestParam int pageSize){
-        IPage<Blog> page=new Page(pagecount,pageSize);
+        IPage page=new Page(pagecount,pageSize);
         IPage iPage=blogServicesLmpl.page(page);
         return new R(iPage.getRecords());
 

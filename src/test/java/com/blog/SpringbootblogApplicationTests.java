@@ -22,7 +22,7 @@ class SpringbootblogApplicationTests {
     @Test
     void contextLoads() throws InterruptedException {
         //插入单条数据
-        redisTemplate.opsForValue().set("key1", "我是新信息");
+        redisTemplate.opsForValue().set("key1", "我是新信息",1, TimeUnit.MINUTES);
         System.out.println(redisTemplate.opsForValue().get("key1"));
 //插入单条数据（存在有效期）
         System.out.println("-----------------");

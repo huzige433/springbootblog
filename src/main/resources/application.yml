@@ -1,11 +1,11 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.239.130:3306/blog_db
-    username: blog_db
-    password: cWxWSJrm4dhMJseC
+    url: jdbc:mysql://localhost:3306/ssm_db
+    username: root
+    password: root
   redis:
-    host: 192.168.239.130
+    host: localhost
     port: 6379
     jedis:
       pool:
@@ -14,7 +14,7 @@ spring:
         max-idle: 8
         min-idle: 0
     timeout: 5000
-    password: root123
+#    password:
     database: 0
   devtools:
     restart:

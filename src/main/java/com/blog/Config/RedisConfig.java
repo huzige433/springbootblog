@@ -1,42 +1,45 @@
 package com.blog.Config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
-import org.springframework.cache.annotation.EnableCaching;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableCaching
-public class RedisConfig extends CachingConfigurerSupport {
+public class RedisConfig extends RedisAutoConfiguration {
 
-    @Bean(name = "redisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory){
+    @Bean
+    public RedisTemplate<String, Object> myRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
 
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        //参照StringRedisTemplate内部实现指定序列化器
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(keySerializer());
-        redisTemplate.setHashKeySerializer(keySerializer());
-        redisTemplate.setValueSerializer(valueSerializer());
-        redisTemplate.setHashValueSerializer(valueSerializer());
-        System.out.println("Redis序列化启动了"+redisConnectionFactory);
-        return redisTemplate;
+        //jackson序列化器
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        //该方法已弃用
+        //om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        jackson2JsonRedisSerializer.setObjectMapper(om);
+
+        //字符串序列化器
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+
+        //key与hashkey的序列化方式
+        template.setKeySerializer(stringRedisSerializer);
+        template.setHashKeySerializer(stringRedisSerializer);
+        //value与hashvalue的序列化方式
+        template.setValueSerializer(jackson2JsonRedisSerializer);
+        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+
+        return template;
     }
-
-    private RedisSerializer<String> keySerializer(){
-        return new StringRedisSerializer();
-    }
-
-    //使用Jackson序列化器
-    private RedisSerializer<Object> valueSerializer(){
-        return new GenericJackson2JsonRedisSerializer();
-    }
-
 }

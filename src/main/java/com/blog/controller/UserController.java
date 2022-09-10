@@ -18,6 +18,7 @@ import java.util.Map;
 
 //控制层,也可以当作路由层
 @RestController
+@CrossOrigin(origins = "http://127.0.0.1:8081")
 @RequestMapping("/v1")
 public class UserController {
 
@@ -73,17 +74,13 @@ public class UserController {
     }
 
     /**
-     * 对象转化为Map
-     *
-     * @param obj
-     * @return
-     * @throws Exception
+     对象转化为Map
      */
     public Map<String, String> objectToMap01(Object obj) throws Exception {
         if (obj == null) {
             return null;
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
 
         Field[] declaredFields = obj.getClass().getDeclaredFields();
         for (Field field : declaredFields) {
