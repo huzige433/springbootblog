@@ -1,5 +1,6 @@
 package com.blog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blog.Domain.Blog;
@@ -20,9 +21,11 @@ public class BlogController {
     private BlogServicesLmpl blogServicesLmpl;
 
 
-    @GetMapping ("/list")
-    public R list(User user) throws Exception {
-        Integer userid=user.getId();
+    @GetMapping ("/list/{userid}")
+    public R list(@PathVariable("userid") Integer userid) throws Exception {
+        LambdaQueryWrapper<Blog> LWQ =new LambdaQueryWrapper();
+        LWQ.select(Blog::getId,Blog::getId,Blog::getTitle,Blog::getDescript).ne(Blog::getUserid,userid);
+
         List<Blog> blogs = blogServicesLmpl.list(userid);
         if (blogs != null) {
             return new R(true, blogs, "列表展示成功");
@@ -40,17 +43,19 @@ public class BlogController {
     }
 
     @GetMapping("/article")
-    @Cacheable(value = "Blog", key = "#articleid")
-    public  R article(@RequestParam String articleid){
+    @Cacheable(value = "article",unless = "#result == null",key = "#articleid")
+    public  Blog article(@RequestParam Integer articleid){
         Blog blog=blogServicesLmpl.getById(articleid);
-        return new R(blog);
+        return blog;
     }
 
     @GetMapping("/page")
-    public R page(@RequestParam int pagecount,@RequestParam int pageSize){
-        IPage page=new Page(pagecount,pageSize);
-        IPage iPage=blogServicesLmpl.page(page);
-        return new R(iPage.getRecords());
+    public R page(@RequestParam int currentPage,@RequestParam int pageSize,@RequestParam int userid){
+        LambdaQueryWrapper<Blog> lqw=new LambdaQueryWrapper();
+        lqw.eq(Blog::getUserid,userid);
+        IPage page=new Page(currentPage,pageSize);
+        IPage iPage=blogServicesLmpl.page(page,lqw);
+        return new R(iPage.getRecords(),iPage.getTotal());
 
     }
 

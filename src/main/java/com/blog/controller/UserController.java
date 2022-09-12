@@ -1,5 +1,6 @@
 package com.blog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.blog.Domain.User;
@@ -45,7 +46,7 @@ public class UserController {
             System.out.println(token);
         }
         Boolean flag = user1 != null;
-        return new R(flag, token, flag ? "登录成功" : "登录失败");
+        return new R(flag, user1,token, flag ? "登录成功" : "登录失败");
     }
 
     @PostMapping("/register")
@@ -58,6 +59,13 @@ public class UserController {
         } else {
             return new R(false, null, "账号已存在");
         }
+    }
+
+    @GetMapping ("/getusers")
+    public R getusers() {
+        LambdaQueryWrapper<User> LWQ =new LambdaQueryWrapper();
+        LWQ.select(User::getId,User::getUsername).ne(User::getId,0);
+      return   new R(true,userServicesLmpl.list(LWQ),"获取成功");
     }
 
     @PostMapping("/delete")

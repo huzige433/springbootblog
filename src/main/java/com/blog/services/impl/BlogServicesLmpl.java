@@ -24,7 +24,7 @@ public class BlogServicesLmpl extends ServiceImpl<BlogDao,Blog> implements IBlog
     }
 
     @Override
-    @Cacheable(cacheNames = "pageredis", key = "#page.current")
+    @Cacheable(cacheNames = "pageredis", key = "#page.current+'-'+#page.size")
     public <E extends IPage<Blog>> E page(E page) {
         return super.page(page);
     }
