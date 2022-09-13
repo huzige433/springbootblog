@@ -8,6 +8,7 @@ import com.blog.controller.utils.JwtUtil;
 import com.blog.controller.utils.R;
 import com.blog.services.impl.UserServicesLmpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 //控制层,也可以当作路由层
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:8081")
+@CrossOrigin(origins = "*")
 @RequestMapping("/v1")
 public class UserController {
 
@@ -27,8 +28,8 @@ public class UserController {
     private UserServicesLmpl userServicesLmpl;
 
     @GetMapping("/index")
-    public String index(HttpServletRequest request){
-        return "hello";
+    public String index(){
+        return "hello111134";
     }
 
     @PostMapping("/login")

@@ -20,7 +20,7 @@ import static org.springframework.data.redis.cache.RedisCacheConfiguration.defau
 /**
  * @author wwj
  */
-@Configuration
+//@Configuration 暂时废弃掉这个cache的配置用rediscacheManageConfig
 public class CacheConfig extends CachingConfigurerSupport {
 
     @Resource

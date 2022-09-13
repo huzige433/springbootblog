@@ -1,5 +1,6 @@
 package com.blog.services.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -21,6 +22,12 @@ public class BlogServicesLmpl extends ServiceImpl<BlogDao,Blog> implements IBlog
         LambdaQueryWrapper<Blog> lqw=new LambdaQueryWrapper<>();
         lqw.eq(Blog::getUserid,userid);
         return super.list(lqw);
+    }
+
+    @Override
+    @Cacheable(value = "pageredis",unless = "#result == null",key = "#page.current+':'+#page.size")
+    public <E extends IPage<Blog>> E page(E page, Wrapper<Blog> queryWrapper) {
+        return super.page(page, queryWrapper);
     }
 
     @Override

@@ -14,4 +14,6 @@ public class Blog implements Serializable {
     private Integer userid;
     private String descript;
 
+    public Blog() {
+    }
 }

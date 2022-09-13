@@ -42,4 +42,5 @@ public class RedisConfig extends RedisAutoConfiguration {
 
         return template;
     }
+
 }

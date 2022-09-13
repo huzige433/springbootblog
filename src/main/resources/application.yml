@@ -1,11 +1,11 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ssm_db
-    username: root
-    password: root
+    url: jdbc:mysql://192.168.239.130:3306/blog_db
+    username: blog_db
+    password: cWxWSJrm4dhMJseC
   redis:
-    host: localhost
+    host: 192.168.239.130
     port: 6379
     jedis:
       pool:
@@ -18,7 +18,8 @@ spring:
     database: 0
   devtools:
     restart:
-      additional-paths: src/main
+      additional-paths: src/main/java
+      enabled: true
   jackson:
     default-property-inclusion: non_null
 
